@@ -44,7 +44,7 @@ CONSTRUAL_QUESTIONS = [
 
 
 COLUMNS = ["Interview ID", "Month of Interview", "Numeric day of Month", "Year", "Province", "District", "Village", "Interviewer Name/ID", "Interviewer's Gender (M/F)", "Interviewer's age", "Interviewer's Current Profession", "Interviewer's Place of Birth", "Interviewer's Current Residing Place", "Interviewer's Ethnicity", "Interviewer's Highest Education  level",
-           "Participant's name", "Gender (M/F)", "Age", "Education", "Marital Status(S/M)", "Occupation Position/Title", "Organization Affiliation", "Interviewee Province", "Interviewee District", "Interviewee Village/Nahia", "Ethnicity", "Tribe/Sub tribal Affiliation (Pashtuns Only)", "Religion Shia/Sunni", "Monthly Income", "Family Size", ]
+           "Participant's name", "Gender (M/F)", "Age", "Education", "Marital Status(S/M)", "Occupation Position/Title", "Organization Affiliation", "Interviewee Province", "Interviewee District", "Interviewee Village/Nahia", "Ethnicity", "Tribe/Sub tribal Affiliation (Pashtuns Only)", "Religion Shia/Sunni", "Monthly Income", "Family Size"]
 
 
 def _gen_df():
@@ -57,12 +57,12 @@ def _gen_df():
 
 def _add_table_cnt(row: T.List, doc: dx.Document):
     table = doc.tables[0]
-    table_content = [
-        cell.text for col in table.columns for cell in col.cells]
-    row.extend([table_content[21], table_content[59], table_content[78],
-                table_content[97], table_content[135], table_content[154]])
-    row.extend(table_content[41:49])
-    row.extend(list(set(table_content[136:152])))
+    row.extend([cell.text for cell in table.rows[2].cells[2:5]])
+    row.extend([cell.text for cell in table.rows[2].cells[6:]])
+    row.extend(
+        [cell.text for cell in table.columns[2].cells[3:11]])
+    row.extend([cell.text for cell in table.columns[-1].cells[3:-3]])
+    row.extend([cell.text for cell in table.columns[-1].cells[-2:]])
 
 
 def _get_q_indices(paragraphs: T.List[str], qs: T.List[str]) -> T.List[int]:
@@ -102,4 +102,4 @@ def transform_load(get_files: T.Callable, name: str):
         data.loc[len(data)] = row
 
     data.set_index("Interview ID", inplace=True)
-    data.to_csv("out/{name}.csv")
+    data.to_csv(f"out/{name}.csv")

@@ -1,5 +1,7 @@
 import os
 
+from app.load import transform_load
+
 
 def get_nangrahar_files():
     root = "data/1. Nangrahar - NGR"
@@ -10,3 +12,6 @@ def get_nangrahar_files():
     p = 'English'
     files = [f for f in files if p in f]
     return files
+
+
+transform_load(get_nangrahar_files, "nangrahar")
