@@ -2,7 +2,8 @@ The scripts to convert surveys of Afghan Ministry of Education about ghost worke
 
 Note that conversion scripts for each district is unique, as the data have not been consistently collected. Each data collection script makes certain assumptions about the input.
 
-## Nangrahar Assumptions ##
+## Script Assumptions ##
+The `transform_load` function in `load.py` works for any series of inputs as long as they're Word documents and have the following properties:
 - There is only one table in the document.
 - Tables all have the same format and order.
 - There are 27 interviewee questions, 5 construal questions, and table fields as described in `COLUMNS` constant.
