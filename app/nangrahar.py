@@ -71,10 +71,10 @@ def _add_table_cnt(row: T.List, doc: dx.Document):
     table = doc.tables[0]
     table_content = [
         cell.text for col in table.columns for cell in col.cells]
-    row.extend([table_content[21], table_content[59],
+    row.extend([table_content[21], table_content[59], table_content[78],
                 table_content[97], table_content[135], table_content[154]])
     row.extend(table_content[41:49])
-    row.extend(table_content[136:152])
+    row.extend(list(set(table_content[136:152])))
 
 
 def _get_q_indices(paragraphs: T.List[str], qs: T.List[str]) -> T.List[int]:
