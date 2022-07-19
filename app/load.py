@@ -4,6 +4,12 @@ import uuid
 import pandas as pd
 import docx as dx
 
+
+class Region(T.TypedDict):
+    files_method: T.Callable[[], T.List[str]]
+    name: str
+
+
 QUESTIONS = [
     "What departments are responsible for recruitment at the MOE?",
     "Who recruits short term and contracted staff? What role does the MOE HR Directorate and its affiliate offices in provinces play in this recruitment process?",
@@ -68,14 +74,29 @@ def _add_table_cnt(row: T.List, doc: dx.Document):
 def _get_q_indices(paragraphs: T.List[str], qs: T.List[str]) -> T.List[int]:
     q_indices = []
     for q_ in qs:
-        ix = [i for (i, v) in enumerate(paragraphs) if q_ in v][0]
+        try:
+            ix = [i for (i, v) in enumerate(paragraphs) if q_ in v][0]
+        except:
+            breakpoint()
         q_indices.append(ix)
     return q_indices
+
+
+def _fix_inconsistent_qs(paragraphs):
+    inconsistent_q = "Was the interviewee ever reluctant in responding to questions? If yes, did they share why"
+    if(inconsistent_q in paragraphs):
+        iq_ix = paragraphs.index(inconsistent_q)
+        new_q = paragraphs[iq_ix] + " " + paragraphs[iq_ix+1]
+        paragraphs[iq_ix] = new_q
+        del paragraphs[iq_ix+1]
 
 
 def _add_qs(row: T.List, doc: dx.Document, qs: T.List[str]):
     paragraphs = [
         p.text.replace("relunctant", "reluctant") for p in doc.paragraphs if not p.text.startswith("On")]
+
+    _fix_inconsistent_qs(paragraphs)
+
     q_indices = _get_q_indices(paragraphs, qs)
 
     for ix, q_ix in enumerate(q_indices):
@@ -89,8 +110,8 @@ def _add_qs(row: T.List, doc: dx.Document, qs: T.List[str]):
         row.append(ans)
 
 
-def transform_load(get_files: T.Callable, name: str):
-    files = get_files()
+def transform_load(region: Region):
+    files = region["files_method"]()
     data = _gen_df()
 
     for file in files:
@@ -98,8 +119,11 @@ def transform_load(get_files: T.Callable, name: str):
         row = [str(uuid.uuid4())[:8]]
         _add_table_cnt(row, doc)
         _add_qs(row, doc, QUESTIONS)
-        _add_qs(row, doc, CONSTRUAL_QUESTIONS)
+        try:
+            _add_qs(row, doc, CONSTRUAL_QUESTIONS)
+        except:
+            breakpoint()
         data.loc[len(data)] = row
 
     data.set_index("Interview ID", inplace=True)
-    data.to_csv(f"out/{name}.csv")
+    data.to_csv(f"out/{region['name']}.csv")

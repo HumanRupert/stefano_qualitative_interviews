@@ -10,3 +10,4 @@ The `transform_load` function in `load.py` works for any series of inputs as lon
 - Questions are worded properly and according to the list of questions in `QUESTIONS` and `CONSTRUAL_QUESTIONS` constants. In one of the questions, reluctant is spelled "relunctant", the script tolerates the difference.
 - Every paragraph between the current and the next question is the answer to the current question. For the last interviewee question, everything up to the first blank paragraph is the answer. For the last construal question, everything until the end of the file is the answer.
 - Paragraphs starting with "On" are metadata and disposable.
+- In some of the files, there's a line break in the 4th construal question. The script tolerates the incosistency using `_fix_inconsistent_qs` method.
