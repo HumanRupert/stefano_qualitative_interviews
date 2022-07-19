@@ -6,7 +6,7 @@ Download the files from Dropbox and put them (without the parent directory) in `
 ## Script Assumptions ##
 The `transform_load` function in `load.py` works for any series of inputs as long as they're Word documents and have the following properties:
 - There is only one table in the document.
-- Tables all have the same format and order.
+- Tables all have the same format and order. Some of the tables have two merged rows for religion, some have one. The script tolerates the difference as long as the religion is "Sunni" or "Shia" (or in all caps). The last three rows of some tables in Kabul region are different than the others, the script handles it.
 - There are 27 interviewee questions, 5 construal questions, and table fields as described in `COLUMNS` constant.
 - Questions are worded properly and according to the list of questions in `QUESTIONS` and `CONSTRUAL_QUESTIONS` constants. Because the wording of the questions differ in some files, Levenshtein Distance percentage between simplified strings (that is, the string without dashes, spaces, commas, and lowercased) is used to identify them. The similiarity (`(1-lev)/len(paragraph)`) must be greater than or equal to 70%. The next question must be between the end of the answer to the current question and the end of the file (the list of indices of questions will be strictly increasing). If there are multiple matches, the most similar is used.
 - Every paragraph between the current and the next question is the answer to the current question. For the last interviewee question, everything up to the first blank paragraph is the answer. For the last construal question, everything until the end of the file is the answer.
@@ -30,3 +30,6 @@ A couple of surveys (*تحریری Education Council Memeber* and *NGO (تحری
 
 ## Notes about Parwan ##
 In some of the files, the answer to construal questions are in the same line as the question. You may have to manually edit them and put a line break between the questions and responses.
+
+## Merge ##
+`merge` method in `merge.py` concatenates all the CSV files in `out/` for a list of regions and stores them in a separate CSV file.
