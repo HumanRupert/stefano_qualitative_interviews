@@ -16,7 +16,7 @@ The `transform_load` function in `load.py` works for any series of inputs as lon
 - In some of the files, there's a line break in the 4th construal question. The script tolerates the incosistency using `_fix_inconsistent_qs` method.
 - In some of the files, q22 is worded such that q23 has a lower Levenshtein Distance to the original question. The script tolerates it by removing "revenue office" instances from all paragraphs. The procedure might interrupt other questions that include the phrase.
   
-## Directory structure ##
+## Directory Structure ##
 It doesn't matter how the files and folders are placed in the root folder. The script uses `glob` and runs a recursive sub-folder search to find all the Word documents (.docx extension) that satisfy a regex expression.
 - Kabul: Filename should include "translated"
 - Kandahar: Filename should include "eng"
