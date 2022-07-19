@@ -1,18 +1,15 @@
 import os
 import typing as T
+from glob import glob
 
 from app.load import transform_load, Region
 
 
 def _get_files(root: str, p: str, case_sensitive: bool):
-    files = [
-        f"{root}/{dir_}/{file}" for dir_ in os.listdir(root)
-        if not dir_.startswith('.')
-        for file in os.listdir(f"{root}/{dir_}")]
-
+    files = glob(root + '/**/*.docx', recursive=True)
     files = [f for f in files if p in f] \
         if case_sensitive \
-        else [f for f in files if p in f.lower()]
+        else [f for f in files if p.lower() in f.lower()]
 
     return files
 
@@ -31,6 +28,12 @@ def get_kandahar_files():
     return gov_files + non_gov_files
 
 
+def get_kabul_files():
+    p = "translated"
+    root = "data/4. Kabul - KBL"
+    return _get_files(root, p, False)
+
+
 REGIONS: T.List[Region] = [
     {
         "name": "nangrahar",
@@ -39,5 +42,11 @@ REGIONS: T.List[Region] = [
     {
         "name": "kandahar",
         "files_method": get_kandahar_files
+    },
+    {
+        "name": "kabul",
+        "files_method": get_kabul_files
     }
 ]
+
+transform_load(REGIONS[-1])
