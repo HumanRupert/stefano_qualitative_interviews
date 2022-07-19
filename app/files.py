@@ -14,6 +14,15 @@ def _get_files(root: str, p: str, case_sensitive: bool):
     return files
 
 
+def _get_files_notinc(root: str, p: str, case_sensitive: bool):
+    files = glob(root + '/**/*.docx', recursive=True)
+    files = [f for f in files if p not in f] \
+        if case_sensitive \
+        else [f for f in files if p.lower() not in f.lower()]
+
+    return files
+
+
 def get_nangrahar_files():
     root = "data/1. Nangrahar - NGR"
     p = 'English'
@@ -34,6 +43,12 @@ def get_kabul_files():
     return _get_files(root, p, False)
 
 
+def get_parwan_files():
+    p = "رضایت"
+    root = "data/3. Parwan - PRN"
+    return [f for f in glob(root + '/**/*.docx', recursive=True) if p not in f]
+
+
 REGIONS: T.List[Region] = [
     {
         "name": "nangrahar",
@@ -46,7 +61,9 @@ REGIONS: T.List[Region] = [
     {
         "name": "kabul",
         "files_method": get_kabul_files
+    },
+    {
+        "name": "parwan",
+        "files_method": get_parwan_files
     }
 ]
-
-transform_load(REGIONS[-1])
